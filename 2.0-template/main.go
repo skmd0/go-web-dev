@@ -1,18 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
+	"html/template"
 	"net/http"
 )
 
-func handlerFunc(w http.ResponseWriter, r *http.Request) {
+var homeView *template.Template
+
+func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintln(w, "<h1>Welcome!</h1>")
+	err := homeView.Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
+	var err error
+	homeView, err = template.ParseFiles("home.gohtml")
+	if err != nil {
+		panic(err)
+	}
 	r := mux.NewRouter()
-	r.HandleFunc("/", handlerFunc)
+	r.HandleFunc("/", home)
 	http.ListenAndServe(":3000", r)
 }
