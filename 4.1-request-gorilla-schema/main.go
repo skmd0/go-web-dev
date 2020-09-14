@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	"html/template"
 	"net/http"
 )
@@ -35,14 +36,24 @@ func homeGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// This only gets executed when POST action is done on / path
+type FormData struct {
+	Email string `schema:"email"`
+}
+
 func homePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	// form needs to be parsed first before you can access the data
 	if err := r.ParseForm(); err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(w, "%v\n", r.PostForm["email"])
+	// create new gorilla/schema decoder
+	dec := schema.NewDecoder()
+	var formData FormData
+	// map submitted form data into struct
+	err := dec.Decode(&formData, r.PostForm)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Fprintf(w, "%v\n", formData)
 }
 
 func main() {
@@ -52,9 +63,7 @@ func main() {
 		panic(err)
 	}
 	r := mux.NewRouter()
-	// when page gets loaded homeGet gets executed
 	r.HandleFunc("/", homeGet).Methods("GET")
-	// when form is submitted homePost gets executed
 	r.HandleFunc("/", homePost).Methods("POST")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		panic(err)
