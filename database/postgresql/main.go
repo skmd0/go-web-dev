@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	// this is needed because init() function needs to be called in pq package
 	_ "github.com/lib/pq"
 )
 
@@ -22,6 +23,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	// check if connection works
 	err = db.Ping()
 	if err != nil {
 		panic(err)
