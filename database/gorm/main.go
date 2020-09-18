@@ -35,4 +35,9 @@ func main() {
 	db.Migrator().DropTable(&User{})
 	db.AutoMigrate(&User{})
 
+	u1 := User{Name: "Domen Skamlic", Email: "domen@skamlic.com"}
+	db.Create(&u1)
+
+	u2 := User{Name: "Domenko Skamlici", Email: "domenko@skamlici.net"}
+	db.Create(&u2)
 }
