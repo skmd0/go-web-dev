@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -31,8 +32,21 @@ type UserService struct {
 	UserDB
 }
 
+// Method on top layer specific to UserService that is not CRUD db method
+func (us *UserService) Authenticate(user *User) error {
+	return nil
+}
+
 type userValidator struct {
 	UserDB
+}
+
+// Validator level method that check if conditions are met and then delegates work forward
+func (uv *userValidator) Create(user *User) error {
+	if user.ID <= 0 {
+		return errors.New("ID cannot be lower then 1")
+	}
+	return uv.UserDB.Create(user)
 }
 
 var _ UserDB = &userGorm{}
