@@ -41,7 +41,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	indexView, err = template.ParseFiles("base.gohtml", "structured_data.gohtml", "index.gohtml")
+	indexView, err = template.ParseFiles("base.gohtml", "alert.gohtml", "index.gohtml")
 	if err != nil {
 		panic(err)
 	}
